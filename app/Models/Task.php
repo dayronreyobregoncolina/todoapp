@@ -12,15 +12,17 @@ class Task extends Model
     protected $fillable = [
         'name',
         'description',
-        'user_id'.
+        'user_id',
         'status_id',
     ];
 
-    public function User(){
+    public function User()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function Status(){
+    public function Status()
+    {
         return $this->belongsTo(Status::class);
     }
 }

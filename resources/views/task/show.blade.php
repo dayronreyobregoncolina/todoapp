@@ -1,15 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ $task->name }}
         </h2>
     </x-slot>
 
+
     <div class="py-12 px-5">
-        <div class="grid grid-cols-3 gap-4">
-            <x-task.create></x-task.create>
-            <x-task.all></x-task.all>
+        <x-task.edit :task="$task"></x-task.edit>
+
+        <div class="py-12">
+            <x-task.records></x-task.records>
         </div>
+
     </div>
 
 </x-app-layout>

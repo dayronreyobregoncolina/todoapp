@@ -1,19 +1,20 @@
 <?php
 
-namespace App\View\Components\My;
+namespace App\View\Components\Task;
 
 use Illuminate\View\Component;
 
-class Records extends Component
+class Edit extends Component
 {
+    public $task;
+
     /**
-     * Create a new component instance.
-     *
-     * @return void
+     * Edit constructor.
+     * @param $task
      */
-    public function __construct()
+    public function __construct($task)
     {
-        //
+        $this->task = $task;
     }
 
     /**
@@ -23,6 +24,6 @@ class Records extends Component
      */
     public function render()
     {
-        return view('components.my.records');
+        return view('components.task.edit');
     }
 }

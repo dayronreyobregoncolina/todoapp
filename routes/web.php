@@ -27,4 +27,5 @@ Route::resources([
     'tasks' => TaskController::class,
     'states' => StatusController::class,
 ]);
+
 require __DIR__ . '/auth.php';

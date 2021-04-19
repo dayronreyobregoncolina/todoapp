@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components\My;
+namespace App\View\Components\Task;
 
 use Illuminate\View\Component;
 
-class Tasks extends Component
+class Records extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class Tasks extends Component
      */
     public function render()
     {
-        return view('components.my.tasks');
+        return view('components.task.records');
     }
 }
