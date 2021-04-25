@@ -9,14 +9,8 @@
                 <x-button class="ml-3 mr-1">
                     {{ 'Save' }}
                 </x-button>
+
             </div>
-        </form>
-        <form method="POST" action="{{route('tasks.destroy',$task)}}">
-            @method('DELETE')
-            @csrf
-            <x-button class="ml-3">
-                {{ 'Eliminar' }}
-            </x-button>
         </form>
     </div>
 </div>

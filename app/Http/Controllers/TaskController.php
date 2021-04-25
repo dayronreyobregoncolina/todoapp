@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +16,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -37,11 +38,12 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         //Validation
-        $this->validate($request, [
-            'name' => 'bail|required|max:50',
-            'description' => 'required|max:200',
-            'status_id' => 'required|max:200',
-        ]);
+        $this->validate($request,
+            [
+                'name' => 'bail|required|max:50',
+                'description' => 'required|max:200',
+                'status_id' => 'required|numeric|exists:statuses,id',
+            ]);
 
         $task = Task::create([
             'name' => $request->name,
@@ -84,6 +86,14 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        //Validation
+        $this->validate($request,
+            [
+                'name' => 'bail|required|max:50',
+                'description' => 'required|max:200',
+                'status_id' => 'required|numeric|exists:statuses,id',
+            ]);
+
         $task->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -92,15 +102,33 @@ class TaskController extends Controller
         return view('task.show')->with('task', $task);
     }
 
+    public function restore($id)
+    {
+        /** @var Task $task */
+        Task::withTrashed()
+            ->where('id', $id)
+            ->restore();
+        return redirect('dashboard');
+    }
+
+    public function force_destroy($id)
+    {
+        /** @var Task $task */
+        Task::withTrashed()
+            ->where('id', $id)
+            ->forceDelete();
+        return redirect('dashboard');
+    }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param \App\Models\Task $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy($id)
     {
-        $task->delete();
+        Task::findOrFail($id)->delete();
         return redirect(route('dashboard'));
     }
 }

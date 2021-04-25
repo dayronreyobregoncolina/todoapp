@@ -122,5 +122,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="CELCOM" />
+    <orderEntry type="module" module-name="Homestead" />
   </component>
 </module>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
@@ -15,17 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [PageController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
+
 
 Route::resources([
     'tasks' => TaskController::class,
     'states' => StatusController::class,
 ]);
+Route::get('tasks/{id}/destroy',[TaskController::class,'destroy'])->name('tasks.destroy');
+Route::get('tasks/{id}/restore',[TaskController::class,'restore'])->name('tasks.restore');
+Route::get('tasks/{id}/destroy/force',[TaskController::class,'force_destroy'])->name('tasks.destroy.force');
 
 require __DIR__ . '/auth.php';

@@ -19,7 +19,7 @@ class All extends Component
      */
     public function __construct()
     {
-        $this->tasks = Task::where('user_id', Auth::user()->id)->get();
+        $this->tasks = Auth::user()->tasks()->withTrashed()->get();
     }
 
 
