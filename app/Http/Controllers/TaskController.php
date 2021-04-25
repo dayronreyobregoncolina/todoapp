@@ -2,31 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Task\CreateTaskRequest;
+use App\Http\Requests\Task\UpdateTaskRequest;
 use App\Models\Task;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\TaskRepository;
 
 class TaskController extends Controller
 {
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-
-    }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @var TaskRepository
      */
-    public function create()
+    private $respository;
+
+    /**
+     * TaskController constructor.
+     * @param TaskRepository $respository
+     */
+    public function __construct(TaskRepository $respository)
     {
-        //
+        $this->respository = $respository;
     }
 
     /**
@@ -35,23 +31,9 @@ class TaskController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateTaskRequest $request)
     {
-        //Validation
-        $this->validate($request,
-            [
-                'name' => 'bail|required|max:50',
-                'description' => 'required|max:200',
-                'status_id' => 'required|numeric|exists:statuses,id',
-            ]);
-
-        $task = Task::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'user_id' => Auth::user()->id,
-            'status_id' => $request->status_id,
-        ]);
-
+        $this->respository->create($request->all());
         return redirect('dashboard');
     }
 
@@ -67,56 +49,35 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Task $task
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Task $task)
-    {
-
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Task $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
-        //Validation
-        $this->validate($request,
-            [
-                'name' => 'bail|required|max:50',
-                'description' => 'required|max:200',
-                'status_id' => 'required|numeric|exists:statuses,id',
-            ]);
-
-        $task->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'status_id' => $request->status_id,
-        ]);
-        return view('task.show')->with('task', $task);
+        $this->respository->update($request->all(), $task->id);
+        return view('dashboard');
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function restore($id)
     {
-        /** @var Task $task */
-        Task::withTrashed()
-            ->where('id', $id)
-            ->restore();
+        $this->respository->restore($id);
         return redirect('dashboard');
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function force_destroy($id)
     {
-        /** @var Task $task */
-        Task::withTrashed()
-            ->where('id', $id)
-            ->forceDelete();
+        $this->respository->force_destroy($id);
         return redirect('dashboard');
     }
 
@@ -128,7 +89,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        Task::findOrFail($id)->delete();
-        return redirect(route('dashboard'));
+        $this->respository->delete($id);
+        return view('dashboard');
     }
 }
